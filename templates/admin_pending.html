@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h2 class="text-warning">Pending Orders</h2>
+    <div class="btn-group">
+        <a href="/admin/pending" class="btn btn-warning active">Pending</a>
+        <a href="/admin/ready" class="btn btn-outline-info">Ready</a>
+        <a href="/admin/history" class="btn btn-outline-secondary">History</a>
+        <a href="/admin/logout" class="btn btn-outline-danger">Logout</a>
+    </div>
+</div>
+
+{% for order in orders %}
+<div class="card mb-3 shadow-sm border-warning">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0"><strong>#{{ order.id }}</strong> - {{ order.customer_name }}</h5>
+            <div>
+                <a href="/mark_ready/{{ order.id }}" class="btn btn-success btn-sm">Move to Ready</a>
+                <a href="/cancel_order/{{ order.id }}" class="btn btn-link btn-sm text-danger" onclick="return confirm('Cancel this order?')">Cancel</a>
+            </div>
+        </div>
+
+        <div class="bg-light p-2 rounded">
+            <h6 class="text-muted small border-bottom pb-1">Items in Order:</h6>
+            <ul class="list-unstyled mb-0">
+                {% for item in order.items %}
+                <li class="small">
+                    <span class="badge bg-secondary">{{ item.quantity }}</span>
+                    {{ item.product_name }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% else %}
+<p class="text-muted">No pending orders.</p>
+{% endfor %}
+{% endblock %}

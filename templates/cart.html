@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Your Cart</h2>
+
+{% if items %}
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Item Description</th>
+                    <th>Price</th>
+                    <th style="width: 150px;">Quantity</th>
+                    <th class="text-end">Total</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in items %}
+                <tr>
+                    <td>
+                        <div class="fw-bold">{{ entry.product.description }}</div>
+                        <small class="text-muted">Item #: {{ entry.product.item_number }}</small>
+                    </td>
+                    <td>${{ "%.2f"|format(entry.product.price) }}</td>
+                    <td>
+                        <form action="/update_cart/{{ entry.product.id }}" method="POST">
+                            <input type="number"
+                                   name="quantity"
+                                   value="{{ entry.quantity }}"
+                                   min="1"
+                                   class="form-control shadow-sm"
+                                   onchange="this.form.submit()"
+                                   onkeyup="if(event.keyCode == 13) this.form.submit()">
+                        </form>
+                    </td>
+                    <td class="text-end">${{ "%.2f"|format(entry.subtotal) }}</td>
+                    <td class="text-end">
+                        <a href="/remove_from_cart/{{ entry.product.id }}" class="btn btn-sm btn-outline-danger">
+                            Remove
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr class="table-light fw-bold">
+                    <td colspan="3" class="text-end">Grand Total:</td>
+                    <td class="text-end text-primary h5">${{ "%.2f"|format(grand_total) }}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row mt-5 justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-primary shadow">
+                <div class="card-body">
+                    <h4 class="card-title mb-3 text-primary">Complete Your Order</h4>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Pickup Name</label>
+                            <input type="text" name="name" placeholder="Who is picking this up?" class="form-control form-control-lg" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Submit Pickup Order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <div class="text-center py-5">
+        <h4 class="text-muted">Your cart is empty.</h4>
+        <a href="/" class="btn btn-primary mt-3">Browse Inventory</a>
+    </div>
+{% endif %}
+{% endblock %}

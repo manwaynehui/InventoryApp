@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h2 class="text-secondary">History</h2>
+    <div class="btn-group">
+        <a href="/admin/pending" class="btn btn-outline-warning">Pending</a>
+        <a href="/admin/ready" class="btn btn-outline-info">Ready</a>
+        <a href="/admin/history" class="btn btn-secondary active">History</a>
+        <a href="/admin/logout" class="btn btn-outline-danger">Logout</a>
+    </div>
+</div>
+<div class="list-group">
+    {% for order in orders %}
+    <div class="list-group-item d-flex justify-content-between align-items-center">
+        <span>#{{ order.id }} - {{ order.customer_name }}</span>
+        <a href="/receipt/{{ order.id }}" target="_blank" class="btn btn-sm btn-outline-dark">View Invoice</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

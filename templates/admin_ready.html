@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h2 class="text-info">Ready for Pickup</h2>
+    <div class="btn-group">
+        <a href="/admin/pending" class="btn btn-outline-warning">Pending</a>
+        <a href="/admin/ready" class="btn btn-info active">Ready</a>
+        <a href="/admin/history" class="btn btn-outline-secondary">History</a>
+        <a href="/admin/logout" class="btn btn-outline-danger">Logout</a>
+    </div>
+</div>
+
+{% for order in orders %}
+<div class="card mb-3 shadow-sm border-info">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0"><strong>#{{ order.id }}</strong> - {{ order.customer_name }}</h5>
+            <a href="/mark_picked_up/{{ order.id }}" class="btn btn-primary">Confirm Picked Up</a>
+        </div>
+
+        <div class="bg-light p-2 rounded">
+            <h6 class="text-muted small border-bottom pb-1">Items to Hand Over:</h6>
+            <ul class="list-unstyled mb-0">
+                {% for item in order.items %}
+                <li class="small">
+                    <span class="badge bg-secondary">{{ item.quantity }}</span>
+                    {{ item.product_name }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% else %}
+<p class="text-muted">No orders ready for pickup.</p>
+{% endfor %}
+{% endblock %}

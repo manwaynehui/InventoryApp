@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+            <h4 class="mb-0">Invoice #{{ order.id }}</h4>
+            <span class="badge {% if order.status == 'completed' %}bg-secondary{% else %}bg-warning text-dark{% endif %} px-3 py-2">
+                STATUS: {{ order.status|upper }}
+            </span>
+        </div>
+        <div class="card-body p-4">
+            <div class="row mb-4">
+                <div class="col-6">
+                    <p class="text-muted mb-1 small fw-bold">CUSTOMER</p>
+                    <div class="h5">{{ order.customer_name }}</div>
+                </div>
+                <div class="col-6 text-end">
+                    <p class="text-muted mb-1 small fw-bold">ORDER DATE</p>
+                    <div class="fw-bold">{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                </div>
+            </div>
+            <table class="table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Item</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-end">Unit Price</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set grand = namespace(val=0) %}
+                    {% for item in order.items %}
+                    <tr>
+                        <td>{{ item.product_name }}</td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-end">${{ "%.2f"|format(item.price_per_unit) }}</td>
+                        <td class="text-end">${{ "%.2f"|format(item.price_per_unit * item.quantity) }}</td>
+                    </tr>
+                    {% set grand.val = grand.val + (item.price_per_unit * item.quantity) %}
+                    {% endfor %}
+                    <tr class="table-light fw-bold">
+                        <td colspan="3" class="text-end">Grand Total:</td>
+                        <td class="text-end text-primary h5">${{ "%.2f"|format(grand.val) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer d-flex justify-content-between bg-white border-top-0 p-4">
+            <a href="/" class="btn btn-outline-secondary px-4">Back to Shop</a>
+            {% if order.status == 'submitted' %}
+            <a href="/cancel_order/{{ order.id }}" class="btn btn-danger px-4" onclick="return confirm('Cancel this order?')">Cancel Order</a>
+            {% else %}
+            <a href="/admin" class="btn btn-dark px-4">Back to Admin</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
